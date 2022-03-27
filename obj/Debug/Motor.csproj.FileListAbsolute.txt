@@ -1,0 +1,10 @@
+C:\Users\HYJH\source\repos\Motor\bin\Debug\Motor.exe.config
+C:\Users\HYJH\source\repos\Motor\bin\Debug\Motor.exe
+C:\Users\HYJH\source\repos\Motor\bin\Debug\Motor.pdb
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.csproj.AssemblyReference.cache
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.Motor.resources
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.Properties.Resources.resources
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.csproj.GenerateResource.cache
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.csproj.CoreCompileInputs.cache
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.exe
+C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.pdb
