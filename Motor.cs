@@ -11,13 +11,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace Motor
 {
     public partial class Motor : Form
     {
-        //public Thread serialThread;
-        public int rx_data;
 
         
 
@@ -37,7 +36,6 @@ namespace Motor
 
             txtMotorAngle.Text = "17734";
             txtMotorSpeed.Text = "17734";
-
         }
         private void LoadConfigurationSetting()
         {
@@ -87,8 +85,8 @@ namespace Motor
             }//기다림
             else
             {//기다림 후 실행
-                
-                txtRead.AppendText(Convert.ToChar(rx_data)+Environment.NewLine);
+                msgParse( ((byte)rx_data), 100 );
+                //txtRead.AppendText(Convert.ToChar(rx_data)+Environment.NewLine);
                 txtRead.ScrollToCaret();
 
             }
@@ -105,12 +103,25 @@ namespace Motor
             public int param;
         }
         PKT rxPKT = new PKT();
-        byte[] rxbuf;
+        
         int state = PKT_STATE.HEADER;
+        public int rx_data;
+        private bool rxLogFlag = true;
+        public bool checksumFlag;
 
-        private void msgParse(byte rx_data)
+        DateTime preTime = DateTime.Now;
+               
+            byte[] rxbuf = new byte[PKT_INDEX.CHECK + 1];
+        Queue<byte> rxMessage = new Queue<byte>();
+        private void msgParse(byte rx_data, int timeout)
         {
-            Queue<byte> rxMessage = new Queue<byte>();
+            checksumFlag = false;
+            
+            if (  (DateTime.Now-preTime).TotalMilliseconds >timeout)
+            {
+                state = PKT_STATE.HEADER;
+                preTime = DateTime.Now;
+            }
             /////Add : Time out 걸어서 header state로 이동
             // 상태머신으로 parsing
             switch (state) 
@@ -118,6 +129,7 @@ namespace Motor
                 case PKT_STATE.HEADER:
                     if (rx_data == 0xFF)
                     {
+                        rxMessage.Clear();
                         rxMessage.Enqueue(rx_data);
                         state = PKT_STATE.LENGTH;
                     }
@@ -146,31 +158,35 @@ namespace Motor
 
                 case PKT_STATE.CHECK:
                     rxMessage.Enqueue(rx_data);
+                    int i = 0;
+                    while (rxMessage.Count >0)
+                    {rxbuf[i++] = rxMessage.Dequeue();}
+                    checksumFlag = ChecksumPAK(rxbuf, rxbuf[PKT_INDEX.CHECK]); //체크섬 확인
+                    if (checksumFlag == true)
+                    { 
+                    //패킷메세지를 전역변수 구조체에 넘겨주기.
+                    rxPKT.length = rxbuf[PKT_INDEX.LENGTH];
+                    rxPKT.inst = rxbuf[PKT_INDEX.INST];
+                    rxPKT.param = rxbuf[PKT_INDEX.PARAM_1] << 0;
+                    rxPKT.param |= rxbuf[PKT_INDEX.PARAM_2] << 8;
+                    }
                     state = PKT_STATE.HEADER;
                     break;
             }
-
-            //체크섬 확인
-            if (ChecksumPAK(rxbuf, rxbuf[PKT_INDEX.CHECK]))
-            { 
-                for(int i=0; i<rxMessage.Count();i++)
+ 
+                
+                if (checksumFlag == true & rxLogFlag == true)
                 {
-                    rxbuf[i] = rxMessage.Dequeue();
-                }
-                //패킷메세지를 전역변수 구조체에 넘겨주기.
-                rxPKT.length = rxbuf[PKT_INDEX.LENGTH];
-                rxPKT.inst = rxbuf[PKT_INDEX.INST];
-                rxPKT.param = rxbuf[PKT_INDEX.PARAM_1] << 0;
-                rxPKT.param |= rxbuf[PKT_INDEX.PARAM_1] << 8; 
+                    string hexString = BitConverter.ToString(rxbuf);
+                    hexString = hexString.Replace('-', ' ');
+                    txtRead.Text += hexString;
+                    txtRead.Text += Environment.NewLine+"------------------"+ Environment.NewLine;
+                    txtRead.Text += "Length : "+rxPKT.length.ToString() + Environment.NewLine;
+                    txtRead.Text += "Instruction : "+rxPKT.inst.ToString() + Environment.NewLine;
+                    txtRead.Text += "Parameter :"+rxPKT.param.ToString() + Environment.NewLine;
             }
-            
 
         }
-
-
-
-
-
 
         #endregion
 
@@ -203,7 +219,6 @@ namespace Motor
             }
             return error;
         }
-
         private int motorAngleSet()
         {
             int error = 0;
@@ -232,6 +247,41 @@ namespace Motor
 
 
         #endregion
+
+
+        private byte sendChecksum(byte[] txData)
+        {
+            uint sum = 0;
+            for (int i = 0; i < txData.Length - 1; i++)
+            {
+                sum += Convert.ToUInt32(txData[i]);
+            }
+            sum = sum & 0xFF;
+            sum = (~sum + 1) & 0xFF;
+
+            return ((byte)sum);
+            //            total += sum;
+            //            return total;
+        }
+        private bool ChecksumPAK(byte[] txData, byte Checkbyte)
+        {
+            bool ret = false;
+            uint sum = 0, total = 0;
+            for (int i = 0; i < txData.Length - 1; i++)
+            {
+                sum += Convert.ToUInt32(txData[i]);
+            }
+            total = sum;
+            total = total & 0xFF;
+            total = (~total + 1) & 0xFF;
+            total += sum;
+            total = total & 0xFF;
+            if (total == 0)
+            {
+                return ret = true;
+            }
+            return ret;
+        }
 
 
         #region Button click
@@ -267,44 +317,6 @@ namespace Motor
 
 
 
-        private byte sendChecksum(byte[] txData)
-        {
-            uint sum = 0;
-            for (int i = 0; i < txData.Length - 1; i++)
-            {
-                sum += Convert.ToUInt32(txData[i]);
-            }
-            sum = sum & 0xFF;
-            sum = (~sum + 1) & 0xFF;
-
-            return ((byte)sum);
-            //            total += sum;
-            //            return total;
-        }
-
-
-
-
-        private bool ChecksumPAK(byte[] txData, byte Checkbyte)
-        {
-            bool ret = false;
-            uint sum = 0, total = 0;
-            for (int i = 0; i < txData.Length - 1; i++)
-            {
-                sum += Convert.ToUInt32(txData[i]);
-            }
-            total = sum;
-            total = total & 0xFF;
-            total = (~total + 1) & 0xFF;
-            total += sum;
-            total = total & 0xFF;
-            if (total == 0)
-            {
-                return ret = true;
-            }
-            return ret;
-        }
-
 
 
 
@@ -316,7 +328,6 @@ namespace Motor
             btnEdit.Enabled = false;
             btnConnect.Enabled = false;
         }
-
         private void txtPortname_DropDown(object sender, EventArgs e)
         {
             txtPortname.Items.Clear();
@@ -326,7 +337,6 @@ namespace Motor
                     txtPortname.Items.Add(item);
                 }
         }
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             serialPortIn.PortName = txtPortname.Text;
@@ -347,7 +357,6 @@ namespace Motor
             }
 
         }
-
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -372,7 +381,6 @@ namespace Motor
                 MessageBox.Show("saving Error," + exc.Message);
             }
         }
-
         private void btnClear_Click(object sender, EventArgs e)
         {
             txtRead.Text = "";
@@ -398,8 +406,6 @@ namespace Motor
                 
             }
         }
-
-
         private void txtMotorSpeed_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back) || e.KeyChar == Convert.ToChar(Keys.Delete)))
@@ -407,7 +413,6 @@ namespace Motor
                 e.Handled = true;
             }
         }
-
         private void txtMotorAngle_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back) || e.KeyChar == Convert.ToChar(Keys.Delete)))
@@ -417,5 +422,6 @@ namespace Motor
         }
 
 
+        
     }
 }

@@ -36,7 +36,6 @@ namespace Motor
         public const int PARAM_1 = 3;
         public const int PARAM_2 = 4;
         public const int CHECK = 5;
-        
 
     }
 
