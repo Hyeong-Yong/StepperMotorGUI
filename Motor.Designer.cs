@@ -57,6 +57,10 @@ namespace Motor
             this.rbtnClockwise = new System.Windows.Forms.RadioButton();
             this.txtMotorAngle = new System.Windows.Forms.TextBox();
             this.txtMotorSpeed = new System.Windows.Forms.TextBox();
+            this.domainUpDown1 = new System.Windows.Forms.DomainUpDown();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.gbConnect.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -68,7 +72,7 @@ namespace Motor
             this.gbConnect.Controls.Add(this.label2);
             this.gbConnect.Controls.Add(this.txtPortname);
             this.gbConnect.Controls.Add(this.label1);
-            this.gbConnect.Location = new System.Drawing.Point(39, 35);
+            this.gbConnect.Location = new System.Drawing.Point(12, 21);
             this.gbConnect.Name = "gbConnect";
             this.gbConnect.Size = new System.Drawing.Size(280, 141);
             this.gbConnect.TabIndex = 0;
@@ -122,7 +126,7 @@ namespace Motor
             this.groupBox1.Controls.Add(this.btnClear);
             this.groupBox1.Controls.Add(this.txtRead);
             this.groupBox1.Controls.Add(this.txtWrite);
-            this.groupBox1.Location = new System.Drawing.Point(325, 35);
+            this.groupBox1.Location = new System.Drawing.Point(298, 21);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(389, 349);
             this.groupBox1.TabIndex = 1;
@@ -167,7 +171,7 @@ namespace Motor
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(125, 186);
+            this.btnEdit.Location = new System.Drawing.Point(98, 172);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(94, 23);
             this.btnEdit.TabIndex = 2;
@@ -177,7 +181,7 @@ namespace Motor
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(225, 186);
+            this.btnSave.Location = new System.Drawing.Point(198, 172);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 23);
             this.btnSave.TabIndex = 2;
@@ -187,7 +191,7 @@ namespace Motor
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(125, 226);
+            this.btnConnect.Location = new System.Drawing.Point(98, 212);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(94, 23);
             this.btnConnect.TabIndex = 2;
@@ -197,7 +201,7 @@ namespace Motor
             // 
             // btnDisconnect
             // 
-            this.btnDisconnect.Location = new System.Drawing.Point(225, 226);
+            this.btnDisconnect.Location = new System.Drawing.Point(198, 212);
             this.btnDisconnect.Name = "btnDisconnect";
             this.btnDisconnect.Size = new System.Drawing.Size(94, 23);
             this.btnDisconnect.TabIndex = 2;
@@ -243,7 +247,7 @@ namespace Motor
             this.groupBox2.Controls.Add(this.txtMotorSpeed);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Location = new System.Drawing.Point(745, 42);
+            this.groupBox2.Location = new System.Drawing.Point(693, 28);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(278, 342);
             this.groupBox2.TabIndex = 3;
@@ -308,11 +312,47 @@ namespace Motor
             this.txtMotorSpeed.TabIndex = 4;
             this.txtMotorSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMotorSpeed_KeyPress);
             // 
+            // domainUpDown1
+            // 
+            this.domainUpDown1.Location = new System.Drawing.Point(39, 303);
+            this.domainUpDown1.Name = "domainUpDown1";
+            this.domainUpDown1.Size = new System.Drawing.Size(120, 25);
+            this.domainUpDown1.TabIndex = 4;
+            this.domainUpDown1.Text = "domainUpDown1";
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(39, 334);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 100);
+            this.flowLayoutPanel1.TabIndex = 5;
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Location = new System.Drawing.Point(56, 257);
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Size = new System.Drawing.Size(80, 21);
+            this.hScrollBar1.TabIndex = 6;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(151, 257);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(71, 15);
+            this.linkLabel1.TabIndex = 7;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "linkLabel1";
+            // 
             // Motor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1249, 450);
+            this.ClientSize = new System.Drawing.Size(1047, 445);
+            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.hScrollBar1);
+            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.domainUpDown1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnDisconnect);
             this.Controls.Add(this.btnConnect);
@@ -331,6 +371,7 @@ namespace Motor
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -361,6 +402,10 @@ namespace Motor
         private System.Windows.Forms.TextBox txtMotorSpeed;
         private System.Windows.Forms.Button btnMotorSet;
         private System.Windows.Forms.Button btnMotorAct;
+        private DomainUpDown domainUpDown1;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private HScrollBar hScrollBar1;
+        private LinkLabel linkLabel1;
     }
 }
 

@@ -18,7 +18,7 @@ namespace Motor
     public partial class Motor : Form
     {
 
-        
+        SerialComm serialComm = new SerialComm();
 
         public Motor()
         {
@@ -34,8 +34,8 @@ namespace Motor
             btnDisconnect.Enabled = false;
             btnSend.Enabled = false;
 
-            txtMotorAngle.Text = "17734";
-            txtMotorSpeed.Text = "17734";
+            txtMotorAngle.Text = "0";
+            txtMotorSpeed.Text = "0";
         }
         private void LoadConfigurationSetting()
         {
@@ -43,7 +43,7 @@ namespace Motor
             txtBaudrate.Text = ConfigurationManager.AppSettings["combaudrate"];
         }
 
-        #region Receive data
+        public int rx_data;
         private void SerialThread()
         {
             try
@@ -64,7 +64,6 @@ namespace Motor
                 while (serialPortIn.IsOpen) //SerialThread 객체에서 SerialMethod 메소드를 사용하여 계속 데이터를 취득함.
                 {
                     rx_data = serialPortIn.ReadByte();
-
                     showRxData(rx_data);
                     Thread.Sleep(10);
                 }
@@ -72,8 +71,11 @@ namespace Motor
             catch 
             {
             }
-           
         }
+
+
+
+        private bool rxLogFlag = true;
 
         public delegate void ShowSerialDataDelegate(int r);
         private void showRxData(int rx_data) //Serial 스레드에서 UI 스레드 접근 시, Delegate로 접근
@@ -85,227 +87,51 @@ namespace Motor
             }//기다림
             else
             {//기다림 후 실행
-                msgParse( ((byte)rx_data), 100 );
-                //txtRead.AppendText(Convert.ToChar(rx_data)+Environment.NewLine);
-                txtRead.ScrollToCaret();
-
-            }
-        }
-
-
-        /// <summary>
-        /// instruction ------ 0x01 : set speed, 0x02 : set angle, 0x03 : clock (1) or anticlock (-1)
-        /// </summary>
-        private struct PKT
-        {
-            public int length;
-            public int inst;
-            public int param;
-        }
-        PKT rxPKT = new PKT();
-        
-        int state = PKT_STATE.HEADER;
-        public int rx_data;
-        private bool rxLogFlag = true;
-        public bool checksumFlag;
-
-        DateTime preTime = DateTime.Now;
-               
-            byte[] rxbuf = new byte[PKT_INDEX.CHECK + 1];
-        Queue<byte> rxMessage = new Queue<byte>();
-        private void msgParse(byte rx_data, int timeout)
-        {
-            checksumFlag = false;
-            
-            if (  (DateTime.Now-preTime).TotalMilliseconds >timeout)
-            {
-                state = PKT_STATE.HEADER;
-                preTime = DateTime.Now;
-            }
-            /////Add : Time out 걸어서 header state로 이동
-            // 상태머신으로 parsing
-            switch (state) 
-            { 
-                case PKT_STATE.HEADER:
-                    if (rx_data == 0xFF)
-                    {
-                        rxMessage.Clear();
-                        rxMessage.Enqueue(rx_data);
-                        state = PKT_STATE.LENGTH;
-                    }
-                break;
-
-                case PKT_STATE.LENGTH:
-                    rxMessage.Enqueue(rx_data);
-                    state = PKT_STATE.INST;
-                    break;
-
-                case PKT_STATE.INST:
-                    rxMessage.Enqueue(rx_data);
-                    state = PKT_STATE.PARAM_1;
-                    break;
-
-                case PKT_STATE.PARAM_1:
-                    rxMessage.Enqueue(rx_data);
-                    state = PKT_STATE.PARAM_2;
-                    break;
-
-
-                case PKT_STATE.PARAM_2:
-                    rxMessage.Enqueue(rx_data);
-                    state = PKT_STATE.CHECK;
-                    break;
-
-                case PKT_STATE.CHECK:
-                    rxMessage.Enqueue(rx_data);
-                    int i = 0;
-                    while (rxMessage.Count >0)
-                    {rxbuf[i++] = rxMessage.Dequeue();}
-                    checksumFlag = ChecksumPAK(rxbuf, rxbuf[PKT_INDEX.CHECK]); //체크섬 확인
-                    if (checksumFlag == true)
-                    { 
-                    //패킷메세지를 전역변수 구조체에 넘겨주기.
-                    rxPKT.length = rxbuf[PKT_INDEX.LENGTH];
-                    rxPKT.inst = rxbuf[PKT_INDEX.INST];
-                    rxPKT.param = rxbuf[PKT_INDEX.PARAM_1] << 0;
-                    rxPKT.param |= rxbuf[PKT_INDEX.PARAM_2] << 8;
-                    }
-                    state = PKT_STATE.HEADER;
-                    break;
-            }
- 
                 
-                if (checksumFlag == true & rxLogFlag == true)
+                if (serialComm.msgParse(((byte)rx_data), 100) == true & rxLogFlag == true)
                 {
-                    string hexString = BitConverter.ToString(rxbuf);
-                    hexString = hexString.Replace('-', ' ');
-                    txtRead.Text += hexString;
-                    txtRead.Text += Environment.NewLine+"------------------"+ Environment.NewLine;
-                    txtRead.Text += "Length : "+rxPKT.length.ToString() + Environment.NewLine;
-                    txtRead.Text += "Instruction : "+rxPKT.inst.ToString() + Environment.NewLine;
-                    txtRead.Text += "Parameter :"+rxPKT.param.ToString() + Environment.NewLine;
-            }
+                    txtRead.Text += serialComm.PrintData;
+                    txtRead.Text += Environment.NewLine + "------------------" + Environment.NewLine;
+                    txtRead.Text += "Packet Length : " + serialComm.rxPKT.Length.ToString() + Environment.NewLine;
+                    txtRead.Text += "Instruction : " + serialComm.rxPKT.Inst.ToString() + Environment.NewLine;
+                    txtRead.Text += "Parameter :" + serialComm.rxPKT.Param.ToString() + Environment.NewLine;
+                    txtRead.ScrollToCaret();
 
-        }
-
-        #endregion
-
-
-
-        #region Transmit data 
-
-        private int motorSpeedSet()
-        {
-            int error = 0; // 0 : 연결잘됨, 1 : serial 연결문제, 2 : Text 공백
-            if (serialPortIn.IsOpen)
-            {
-                if (txtMotorSpeed.Text != "")
-                { 
-                byte[] txByte = new byte[6];
-                txByte[PKT_INDEX.HEADER] = Constants.STX;
-                txByte[PKT_INDEX.LENGTH] = 0x04;  // INST+PARAM[2]+CHECK
-                txByte[PKT_INDEX.INST] = Instructions.speedInst;
-                txByte[PKT_INDEX.PARAM_1] = Convert.ToByte(0xFF & (uint.Parse(txtMotorSpeed.Text) >> 0));
-                txByte[PKT_INDEX.PARAM_2] = Convert.ToByte(0xFF & (uint.Parse(txtMotorSpeed.Text) >> 8));
-                txByte[PKT_INDEX.CHECK] = Convert.ToByte(sendChecksum(txByte));
-                serialPortIn.Write(txByte, 0, txByte.Length);
-                error = 0;
                 }
-                else { return error = 2; }
             }
-            else
-            {
-                return error =1;
-            }
-            return error;
-        }
-        private int motorAngleSet()
-        {
-            int error = 0;
-            if (serialPortIn.IsOpen)
-            {
-                if (txtMotorSpeed.Text != "")
-                {
-                    byte[] txByte = new byte[6];
-                    txByte[PKT_INDEX.HEADER] = Constants.STX;
-                    txByte[PKT_INDEX.LENGTH] = 0x04;  // INST+PARAM[2]+CHECK
-                    txByte[PKT_INDEX.INST] = Instructions.angleInst;
-                    txByte[PKT_INDEX.PARAM_1] = Convert.ToByte(0xFF & (uint.Parse(txtMotorSpeed.Text) >> 0));
-                    txByte[PKT_INDEX.PARAM_2] = Convert.ToByte(0xFF & (uint.Parse(txtMotorSpeed.Text) >> 8));
-                    txByte[PKT_INDEX.CHECK] = Convert.ToByte(sendChecksum(txByte));
-                    serialPortIn.Write(txByte, 0, txByte.Length);
-                    error = 0;
-                }
-                else { return error = 2; }
-            }
-            else
-            {
-                return error = 1;
-            }
-            return error;
-        }
-
-
-        #endregion
-
-
-        private byte sendChecksum(byte[] txData)
-        {
-            uint sum = 0;
-            for (int i = 0; i < txData.Length - 1; i++)
-            {
-                sum += Convert.ToUInt32(txData[i]);
-            }
-            sum = sum & 0xFF;
-            sum = (~sum + 1) & 0xFF;
-
-            return ((byte)sum);
-            //            total += sum;
-            //            return total;
-        }
-        private bool ChecksumPAK(byte[] txData, byte Checkbyte)
-        {
-            bool ret = false;
-            uint sum = 0, total = 0;
-            for (int i = 0; i < txData.Length - 1; i++)
-            {
-                sum += Convert.ToUInt32(txData[i]);
-            }
-            total = sum;
-            total = total & 0xFF;
-            total = (~total + 1) & 0xFF;
-            total += sum;
-            total = total & 0xFF;
-            if (total == 0)
-            {
-                return ret = true;
-            }
-            return ret;
         }
 
 
         #region Button click
         private void btnMotorSet_Click(object sender, EventArgs e)
         {
-            if (motorSpeedSet() == 1)
+            if (serialPortIn.IsOpen)
             {
-                MessageBox.Show("Please connect port.");
+                if (txtMotorSpeed.Text != "")
+                {
+                    byte[] txByte = serialComm.motorSpeedSet(txtMotorSpeed.Text);
+                    serialPortIn.Write(txByte, 0, txByte.Length);                    
+                }
+                else { MessageBox.Show("모터 스피드를 설정하세요"); }
             }
-            if (motorSpeedSet() == 2)
-            {
-                MessageBox.Show("모터 스피드를 설정하세요");
-            }
+            else
+            { MessageBox.Show("Please connect port."); }
         }
+
         private void btnMotorAct_Click(object sender, EventArgs e)
         {
-            if (motorAngleSet() == 1)
+
+            if (serialPortIn.IsOpen)
             {
-                MessageBox.Show("Please connect port.");
+                if (txtMotorAngle.Text != "")
+                {
+                    byte[] txByte = serialComm.motorAngleSet(txtMotorAngle.Text);
+                    serialPortIn.Write(txByte, 0, txByte.Length);
+                }
+                else { MessageBox.Show("모터 각도를 설정하세요"); }
             }
-            if (motorAngleSet() == 2)
-            {
-                MessageBox.Show("모터 각도를 설정하세요");
-            }
+            else
+            { MessageBox.Show("Please connect port."); }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -314,11 +140,6 @@ namespace Motor
         }
 
         #endregion
-
-
-
-
-
 
 
         private void btnEdit_Click(object sender, EventArgs e)
