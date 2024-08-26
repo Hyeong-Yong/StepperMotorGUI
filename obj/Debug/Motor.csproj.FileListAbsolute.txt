@@ -8,3 +8,13 @@ C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.csproj.GenerateResource.cache
 C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.csproj.CoreCompileInputs.cache
 C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.exe
 C:\Users\HYJH\source\repos\Motor\obj\Debug\Motor.pdb
+C:\Dev\C#\StepperMotorGUI\bin\Debug\Motor.exe.config
+C:\Dev\C#\StepperMotorGUI\bin\Debug\Motor.exe
+C:\Dev\C#\StepperMotorGUI\bin\Debug\Motor.pdb
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.csproj.AssemblyReference.cache
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.Motor.resources
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.Properties.Resources.resources
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.csproj.GenerateResource.cache
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.csproj.CoreCompileInputs.cache
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.exe
+C:\Dev\C#\StepperMotorGUI\obj\Debug\Motor.pdb
