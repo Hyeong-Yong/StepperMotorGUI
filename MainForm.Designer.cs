@@ -1,9 +1,9 @@
 ﻿
 using System.Windows.Forms;
 
-namespace Motor
+namespace MotorGUI
 {
-    partial class Motor
+    partial class MotorGUI
     {
         /// <summary>
         /// Required designer variable.
@@ -51,12 +51,12 @@ namespace Motor
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnMotorSet = new System.Windows.Forms.Button();
-            this.btnMotorAct = new System.Windows.Forms.Button();
+            this.btnMotorGUISet = new System.Windows.Forms.Button();
+            this.btnMotorGUIAct = new System.Windows.Forms.Button();
             this.rbtnAntiClockwise = new System.Windows.Forms.RadioButton();
             this.rbtnClockwise = new System.Windows.Forms.RadioButton();
-            this.txtMotorAngle = new System.Windows.Forms.TextBox();
-            this.txtMotorSpeed = new System.Windows.Forms.TextBox();
+            this.txtMotorGUIAngle = new System.Windows.Forms.TextBox();
+            this.txtMotorGUISpeed = new System.Windows.Forms.TextBox();
             this.domainUpDown1 = new System.Windows.Forms.DomainUpDown();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
@@ -225,7 +225,7 @@ namespace Motor
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(112, 15);
             this.label5.TabIndex = 5;
-            this.label5.Text = "<Motor Speed>";
+            this.label5.Text = "<MotorGUI Speed>";
             // 
             // label6
             // 
@@ -234,17 +234,17 @@ namespace Motor
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(106, 15);
             this.label6.TabIndex = 5;
-            this.label6.Text = "<Motor Angle>";
+            this.label6.Text = "<MotorGUI Angle>";
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.btnMotorSet);
-            this.groupBox2.Controls.Add(this.btnMotorAct);
+            this.groupBox2.Controls.Add(this.btnMotorGUISet);
+            this.groupBox2.Controls.Add(this.btnMotorGUIAct);
             this.groupBox2.Controls.Add(this.rbtnAntiClockwise);
             this.groupBox2.Controls.Add(this.rbtnClockwise);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.txtMotorAngle);
-            this.groupBox2.Controls.Add(this.txtMotorSpeed);
+            this.groupBox2.Controls.Add(this.txtMotorGUIAngle);
+            this.groupBox2.Controls.Add(this.txtMotorGUISpeed);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Location = new System.Drawing.Point(693, 28);
@@ -252,27 +252,27 @@ namespace Motor
             this.groupBox2.Size = new System.Drawing.Size(278, 342);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Motor controller";
+            this.groupBox2.Text = "MotorGUI controller";
             // 
-            // btnMotorSet
+            // btnMotorGUISet
             // 
-            this.btnMotorSet.Location = new System.Drawing.Point(133, 254);
-            this.btnMotorSet.Name = "btnMotorSet";
-            this.btnMotorSet.Size = new System.Drawing.Size(75, 23);
-            this.btnMotorSet.TabIndex = 8;
-            this.btnMotorSet.Text = "Send";
-            this.btnMotorSet.UseVisualStyleBackColor = true;
-            this.btnMotorSet.Click += new System.EventHandler(this.btnMotorSet_Click);
+            this.btnMotorGUISet.Location = new System.Drawing.Point(133, 254);
+            this.btnMotorGUISet.Name = "btnMotorGUISet";
+            this.btnMotorGUISet.Size = new System.Drawing.Size(75, 23);
+            this.btnMotorGUISet.TabIndex = 8;
+            this.btnMotorGUISet.Text = "Send";
+            this.btnMotorGUISet.UseVisualStyleBackColor = true;
+            this.btnMotorGUISet.Click += new System.EventHandler(this.btnMotorGUISet_Click);
             // 
-            // btnMotorAct
+            // btnMotorGUIAct
             // 
-            this.btnMotorAct.Location = new System.Drawing.Point(133, 116);
-            this.btnMotorAct.Name = "btnMotorAct";
-            this.btnMotorAct.Size = new System.Drawing.Size(75, 23);
-            this.btnMotorAct.TabIndex = 7;
-            this.btnMotorAct.Text = "Send";
-            this.btnMotorAct.UseVisualStyleBackColor = true;
-            this.btnMotorAct.Click += new System.EventHandler(this.btnMotorAct_Click);
+            this.btnMotorGUIAct.Location = new System.Drawing.Point(133, 116);
+            this.btnMotorGUIAct.Name = "btnMotorGUIAct";
+            this.btnMotorGUIAct.Size = new System.Drawing.Size(75, 23);
+            this.btnMotorGUIAct.TabIndex = 7;
+            this.btnMotorGUIAct.Text = "Send";
+            this.btnMotorGUIAct.UseVisualStyleBackColor = true;
+            this.btnMotorGUIAct.Click += new System.EventHandler(this.btnMotorGUIAct_Click);
             // 
             // rbtnAntiClockwise
             // 
@@ -296,21 +296,21 @@ namespace Motor
             this.rbtnClockwise.Text = "Clockwise";
             this.rbtnClockwise.UseVisualStyleBackColor = true;
             // 
-            // txtMotorAngle
+            // txtMotorGUIAngle
             // 
-            this.txtMotorAngle.Location = new System.Drawing.Point(21, 117);
-            this.txtMotorAngle.Name = "txtMotorAngle";
-            this.txtMotorAngle.Size = new System.Drawing.Size(100, 25);
-            this.txtMotorAngle.TabIndex = 4;
-            this.txtMotorAngle.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMotorAngle_KeyPress);
+            this.txtMotorGUIAngle.Location = new System.Drawing.Point(21, 117);
+            this.txtMotorGUIAngle.Name = "txtMotorGUIAngle";
+            this.txtMotorGUIAngle.Size = new System.Drawing.Size(100, 25);
+            this.txtMotorGUIAngle.TabIndex = 4;
+            this.txtMotorGUIAngle.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMotorGUIAngle_KeyPress);
             // 
-            // txtMotorSpeed
+            // txtMotorGUISpeed
             // 
-            this.txtMotorSpeed.Location = new System.Drawing.Point(21, 253);
-            this.txtMotorSpeed.Name = "txtMotorSpeed";
-            this.txtMotorSpeed.Size = new System.Drawing.Size(100, 25);
-            this.txtMotorSpeed.TabIndex = 4;
-            this.txtMotorSpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMotorSpeed_KeyPress);
+            this.txtMotorGUISpeed.Location = new System.Drawing.Point(21, 253);
+            this.txtMotorGUISpeed.Name = "txtMotorGUISpeed";
+            this.txtMotorGUISpeed.Size = new System.Drawing.Size(100, 25);
+            this.txtMotorGUISpeed.TabIndex = 4;
+            this.txtMotorGUISpeed.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMotorGUISpeed_KeyPress);
             // 
             // domainUpDown1
             // 
@@ -344,7 +344,7 @@ namespace Motor
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "linkLabel1";
             // 
-            // Motor
+            // MotorGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -360,10 +360,10 @@ namespace Motor
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gbConnect);
             this.Controls.Add(this.btnEdit);
-            this.Name = "Motor";
+            this.Name = "MotorGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Motor_Load);
+            this.Load += new System.EventHandler(this.MotorGUI_Load);
             this.gbConnect.ResumeLayout(false);
             this.gbConnect.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -398,10 +398,10 @@ namespace Motor
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rbtnAntiClockwise;
         private System.Windows.Forms.RadioButton rbtnClockwise;
-        private System.Windows.Forms.TextBox txtMotorAngle;
-        private System.Windows.Forms.TextBox txtMotorSpeed;
-        private System.Windows.Forms.Button btnMotorSet;
-        private System.Windows.Forms.Button btnMotorAct;
+        private System.Windows.Forms.TextBox txtMotorGUIAngle;
+        private System.Windows.Forms.TextBox txtMotorGUISpeed;
+        private System.Windows.Forms.Button btnMotorGUISet;
+        private System.Windows.Forms.Button btnMotorGUIAct;
         private DomainUpDown domainUpDown1;
         private FlowLayoutPanel flowLayoutPanel1;
         private HScrollBar hScrollBar1;
