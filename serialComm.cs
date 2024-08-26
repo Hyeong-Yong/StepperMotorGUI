@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 
-namespace Motor
+namespace LaserWritingGUI
 {
     class Constants
     {
@@ -194,7 +194,7 @@ namespace Motor
             return ret;
         }
 
-        public byte[] motorSpeedSet(string speed)
+        public byte[] LaserWritingGUISpeedSet(string speed)
         {
             //// 0 : 연결잘됨, 1 : serial 연결문제, 2 : Text 공백
                     byte[] txByte = new byte[PKT_INDEX.CHECK+1];
@@ -208,7 +208,7 @@ namespace Motor
                     txByte[PKT_INDEX.CHECK] = Convert.ToByte(ChecksumByte(txByte));
             return txByte;
         }
-        public byte[] motorAngleSet(string angle)
+        public byte[] LaserWritingGUIAngleSet(string angle)
         {
                     byte[] txByte = new byte[PKT_INDEX.CHECK + 1];
                     txByte[PKT_INDEX.HEADER] = Constants.STX;

@@ -13,19 +13,19 @@ using System.IO.Ports;
 using System.Text.RegularExpressions;
 using System.Collections;
 
-namespace Motor
+namespace LaserWritingGUI
 {
-    public partial class Motor : Form
+    public partial class LaserWritingGUI : Form
     {
 
         SerialComm serialComm = new SerialComm();
 
-        public Motor()
+        public LaserWritingGUI()
         {
             InitializeComponent();
         }
 
-        private void Motor_Load(object sender, EventArgs e)
+        private void LaserWritingGUI_Load(object sender, EventArgs e)
         {
             this.Text = "Read serial Data using thread";
             LoadConfigurationSetting();
@@ -34,8 +34,8 @@ namespace Motor
             btnDisconnect.Enabled = false;
             btnSend.Enabled = false;
 
-            txtMotorAngle.Text = "0";
-            txtMotorSpeed.Text = "0";
+            txtLaserWritingGUIAngle.Text = "0";
+            txtLaserWritingGUISpeed.Text = "0";
         }
         private void LoadConfigurationSetting()
         {
@@ -103,13 +103,13 @@ namespace Motor
 
 
         #region Button click
-        private void btnMotorSet_Click(object sender, EventArgs e)
+        private void btnLaserWritingGUISet_Click(object sender, EventArgs e)
         {
             if (serialPortIn.IsOpen)
             {
-                if (txtMotorSpeed.Text != "")
+                if (txtLaserWritingGUISpeed.Text != "")
                 {
-                    byte[] txByte = serialComm.motorSpeedSet(txtMotorSpeed.Text);
+                    byte[] txByte = serialComm.LaserWritingGUISpeedSet(txtLaserWritingGUISpeed.Text);
                     serialPortIn.Write(txByte, 0, txByte.Length);                    
                 }
                 else { MessageBox.Show("모터 스피드를 설정하세요"); }
@@ -118,14 +118,14 @@ namespace Motor
             { MessageBox.Show("Please connect port."); }
         }
 
-        private void btnMotorAct_Click(object sender, EventArgs e)
+        private void btnLaserWritingGUIAct_Click(object sender, EventArgs e)
         {
 
             if (serialPortIn.IsOpen)
             {
-                if (txtMotorAngle.Text != "")
+                if (txtLaserWritingGUIAngle.Text != "")
                 {
-                    byte[] txByte = serialComm.motorAngleSet(txtMotorAngle.Text);
+                    byte[] txByte = serialComm.LaserWritingGUIAngleSet(txtLaserWritingGUIAngle.Text);
                     serialPortIn.Write(txByte, 0, txByte.Length);
                 }
                 else { MessageBox.Show("모터 각도를 설정하세요"); }
@@ -227,14 +227,14 @@ namespace Motor
                 
             }
         }
-        private void txtMotorSpeed_KeyPress(object sender, KeyPressEventArgs e)
+        private void txtLaserWritingGUISpeed_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back) || e.KeyChar == Convert.ToChar(Keys.Delete)))
             {
                 e.Handled = true;
             }
         }
-        private void txtMotorAngle_KeyPress(object sender, KeyPressEventArgs e)
+        private void txtLaserWritingGUIAngle_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back) || e.KeyChar == Convert.ToChar(Keys.Delete)))
             {
